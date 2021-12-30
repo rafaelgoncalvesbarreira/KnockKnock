@@ -3,8 +3,6 @@ using KnockKnock.Models;
 
 namespace KnockKnock
 {
-
-
     public class HttpRequestBuilder
     {
         private const string APPLICATION_JSON = "application/json";
