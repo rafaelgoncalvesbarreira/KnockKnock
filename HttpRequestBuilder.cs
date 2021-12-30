@@ -9,29 +9,44 @@ public class HttpRequestBuilder
 
     private HttpContent? content;
     private string url;
+    private string queryStrings;
     private HttpMethod httpMethod;
 
 
     public HttpRequestBuilder(string url)
     {
         this.url = url;
+        this.queryStrings = "";
         this.content = null;
         this.httpMethod = HttpMethod.Get;
     }
 
+    public HttpRequestBuilder WithQuery(Dictionary<string, string> query)
+    {
+        if (query != null && query.Count > 0)
+        {
+            this.queryStrings = new FormUrlEncodedContent(query).ReadAsStringAsync().GetAwaiter().GetResult();
+        }
+
+        return this;
+    }
+
     public HttpRequestBuilder WithData(Dictionary<string, object> data, string contentType)
     {
-        if (contentType == APPLICATION_JSON)
+        if (data != null && data.Count > 0)
         {
-            var json = JsonSerializer.Serialize(data).ToString();
-            content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        }
-        // else if(header.StartsWith(FORM_DATA))
-        else
-        {
-            content = new FormUrlEncodedContent(data
-                .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.ToString() ?? "")
-            ));
+            if (contentType == APPLICATION_JSON)
+            {
+                var json = JsonSerializer.Serialize(data).ToString();
+                content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            }
+            // else if(header.StartsWith(FORM_DATA))
+            else
+            {
+                content = new FormUrlEncodedContent(data
+                    .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.ToString() ?? "")
+                ));
+            }
         }
 
         return this;
@@ -62,23 +77,20 @@ public class HttpRequestBuilder
     {
         var request = new HttpRequestMessage();
         request.Method = this.httpMethod;
+        var uriBuilder = new UriBuilder(this.url);
         if (this.httpMethod == HttpMethod.Get)
         {
-            if (this.content != null)
+            if (!string.IsNullOrEmpty(this.queryStrings))
             {
-
-                var queryString = this.content.ReadAsStringAsync().GetAwaiter().GetResult();
-                var builder = new UriBuilder(this.url);
-                builder.Query = queryString;
-                request.RequestUri = new Uri(builder.ToString());
+                uriBuilder.Query = this.queryStrings;
             }
         }
         else
         {
-
-            request.RequestUri = new Uri(this.url);
             request.Content = this.content;
         }
+
+        request.RequestUri = new Uri(uriBuilder.ToString());
 
         return request;
     }

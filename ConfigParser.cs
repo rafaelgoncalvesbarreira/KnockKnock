@@ -10,7 +10,7 @@ class ConfigParser
 
     public async Task<RequestConfig> ParseConfig(string path)
     {
-        var emptyConfig = new RequestConfig("", RequestType.GET, new Dictionary<string, object>(), new Header("",""));
+        var emptyConfig = new RequestConfig("", RequestType.GET, new Dictionary<string, object>(), new Dictionary<string, string>(), new Header("",""));
 
         try
         {
