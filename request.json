@@ -1,0 +1,7 @@
+{
+    "Url":"https://swapi.dev/api/people/1",
+    "Type": "get",
+    "Query":{
+        "format": "wookiee"
+    }
+}
