@@ -1,4 +1,5 @@
 using RestApiTester.Models;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
@@ -11,23 +12,39 @@ public class ApiTester
         this.config = config;
     }
 
-    public async Task Execute(){
-        var client = new HttpClient();
+    public async Task Execute()
+    {
+        var client = new HttpClient
+        {
+            DefaultRequestVersion = HttpVersion.Version30,
+            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
+        };
         // var request = await CreteRequest();
         var request = new HttpRequestBuilder(this.config.Url)
             .WithRequestType(this.config.Type)
+            .WithQuery(this.config.Query)
             .WithData(this.config.Data, this.config.Headers.ContentType)
             .Build();
 
-        var response = await client.SendAsync(request);
-        Console.WriteLine($"HTTP Code: {response.StatusCode}");
+        try
+        {
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(responseString);
+            var response = await client.SendAsync(request);
+            Console.WriteLine($"HTTP Code: {response.StatusCode}");
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseString);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
-    private HttpMethod FromRequestType(){
-        switch (this.config.Type){
+    private HttpMethod FromRequestType()
+    {
+        switch (this.config.Type)
+        {
             case RequestType.POST:
                 return HttpMethod.Post;
             case RequestType.PUT:
