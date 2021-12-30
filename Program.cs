@@ -1,7 +1,7 @@
 ﻿
 using System.Diagnostics;
 
-namespace RestApiTester
+namespace KnockKnock
 {
     public class Program
     {

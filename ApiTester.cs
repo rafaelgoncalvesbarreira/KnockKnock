@@ -1,9 +1,11 @@
-using RestApiTester.Models;
+using KnockKnock.Models;
 using System.Net;
-using System.Net.Http;
-using System.Text.Json;
 
-public class ApiTester
+namespace KnockKnock
+{
+
+
+    public class ApiTester
 {
     private readonly RequestConfig config;
 
@@ -64,4 +66,5 @@ public class ApiTester
                 return HttpMethod.Get;
         }
     }
+}
 }

@@ -1,4 +1,4 @@
-namespace RestApiTester.Models
+namespace KnockKnock.Models
 {
     public enum RequestType
     {
