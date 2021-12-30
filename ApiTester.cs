@@ -35,7 +35,13 @@ public class ApiTester
             Console.WriteLine($"HTTP Code: {response.StatusCode}");
 
             var responseString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responseString);
+            var contentType = response.Content.Headers.GetValues("Content-Type").First();
+            if(!string.IsNullOrEmpty(contentType) && contentType.Contains("application/json")){
+                Console.WriteLine($"{Environment.NewLine}{responseString.FormatJson()}{Environment.NewLine}");
+            }
+            else{
+                Console.WriteLine(responseString);
+            }
         }
         catch (Exception ex)
         {
