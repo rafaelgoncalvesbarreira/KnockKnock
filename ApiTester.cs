@@ -19,11 +19,13 @@ public class ApiTester
             DefaultRequestVersion = HttpVersion.Version30,
             DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
         };
+
+
         // var request = await CreteRequest();
         var request = new HttpRequestBuilder(this.config.Url)
             .WithRequestType(this.config.Type)
             .WithQuery(this.config.Query)
-            .WithData(this.config.Data, this.config.Headers.ContentType)
+            .WithData(this.config.Data, this.config.Headers?.ContentType ?? "")
             .Build();
 
         try
